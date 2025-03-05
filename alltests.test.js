@@ -4,6 +4,7 @@ const { Queue } = require("./Queue");
 const { HashMap } = require("./HashMap");
 const { PriorityHeap } = require("./PriorityHeap");
 const { BinaryTree } = require("./BinaryTree");
+const { Graph } = require("./Graph");
 
 describe("Queue", () => {
   let queue;
@@ -375,5 +376,67 @@ describe("BinaryTree", () => {
       2, 7, 5, 15, 10,
     ]);
     consoleSpy.mockRestore();
+  });
+});
+
+describe("Graph", () => {
+  let graph;
+
+  beforeEach(() => {
+    graph = new Graph();
+  });
+
+  test("should initialize an empty adjacency list", () => {
+    expect(graph.adjacencyList.size).toBe(0);
+  });
+
+  test("should add vertices to the graph", () => {
+    graph.addVertex("A");
+    graph.addVertex("B");
+
+    expect(graph.adjacencyList.has("A")).toBe(true);
+    expect(graph.adjacencyList.has("B")).toBe(true);
+  });
+
+  test("should add edges between vertices", () => {
+    graph.addVertex("A");
+    graph.addVertex("B");
+    graph.addEdge("A", "B");
+
+    expect(graph.hasEdge("A", "B")).toBe(true);
+    expect(graph.hasEdge("B", "A")).toBe(true);
+  });
+
+  test("should remove edges between vertices", () => {
+    graph.addVertex("A");
+    graph.addVertex("B");
+    graph.addEdge("A", "B");
+    graph.removeEdge("A", "B");
+
+    expect(graph.hasEdge("A", "B")).toBe(false);
+    expect(graph.hasEdge("B", "A")).toBe(false);
+  });
+
+  test("should remove a vertex and all its edges", () => {
+    graph.addVertex("A");
+    graph.addVertex("B");
+    graph.addVertex("C");
+    graph.addEdge("A", "B");
+    graph.addEdge("A", "C");
+    graph.removeVertex("A");
+
+    expect(graph.adjacencyList.has("A")).toBe(false);
+    expect(graph.hasEdge("B", "A")).toBe(false);
+    expect(graph.hasEdge("C", "A")).toBe(false);
+  });
+
+  test("should return neighbors of a given vertex", () => {
+    graph.addVertex("A");
+    graph.addVertex("B");
+    graph.addVertex("C");
+    graph.addEdge("A", "B");
+    graph.addEdge("A", "C");
+
+    expect(graph.getNeighbors("A")).toEqual(["B", "C"]);
   });
 });
