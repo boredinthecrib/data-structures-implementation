@@ -2,6 +2,8 @@ const { Stack } = require("./Stack");
 const { LinkedList } = require("./LinkedList");
 const { Queue } = require("./Queue");
 const { HashMap } = require("./HashMap");
+const { PriorityHeap } = require("./PriorityHeap");
+const { BinaryTree } = require("./BinaryTree");
 
 describe("Queue", () => {
   let queue;
@@ -231,5 +233,147 @@ describe("HashMap", () => {
       hashMap.set(`key${i}`, `value${i}`);
     }
     expect(hashMap.capacity).toBeGreaterThan(initialCapacity);
+  });
+});
+
+describe("PriorityHeap", () => {
+  let heap;
+
+  beforeEach(() => {
+    heap = new PriorityHeap();
+  });
+
+  test("should initialize an empty heap", () => {
+    expect(heap.isEmpty()).toBe(true);
+    expect(heap.size()).toBe(0);
+  });
+
+  test("should insert elements and maintain heap property", () => {
+    heap.insert(10);
+    heap.insert(5);
+    heap.insert(20);
+    heap.insert(3);
+
+    expect(heap.peek()).toBe(3); // Smallest element should be at the root
+    expect(heap.size()).toBe(4);
+  });
+
+  test("should extract the minimum element and maintain heap structure", () => {
+    heap.insert(10);
+    heap.insert(5);
+    heap.insert(20);
+    heap.insert(3);
+
+    expect(heap.extractMin()).toBe(3);
+    expect(heap.peek()).toBe(5);
+    expect(heap.size()).toBe(3);
+  });
+
+  test("should return null when extracting from an empty heap", () => {
+    expect(heap.extractMin()).toBeNull();
+  });
+
+  test("should return null when peeking into an empty heap", () => {
+    expect(heap.peek()).toBeNull();
+  });
+
+  test("should return the correct size of the heap", () => {
+    heap.insert(15);
+    heap.insert(25);
+    expect(heap.size()).toBe(2);
+  });
+
+  test("should return true for isEmpty when heap is empty", () => {
+    expect(heap.isEmpty()).toBe(true);
+    heap.insert(8);
+    expect(heap.isEmpty()).toBe(false);
+  });
+});
+
+describe("BinaryTree", () => {
+  let tree;
+
+  beforeEach(() => {
+    tree = new BinaryTree();
+  });
+
+  test("should initialize an empty tree", () => {
+    expect(tree.root).toBeNull();
+  });
+
+  test("should insert elements into the tree", () => {
+    tree.insert(10);
+    tree.insert(5);
+    tree.insert(15);
+
+    expect(tree.root.data).toBe(10);
+    expect(tree.root.left.data).toBe(5);
+    expect(tree.root.right.data).toBe(15);
+  });
+
+  test("should correctly search for existing values", () => {
+    tree.insert(10);
+    tree.insert(5);
+    tree.insert(15);
+
+    expect(tree.search(10)).toBe(true);
+    expect(tree.search(5)).toBe(true);
+    expect(tree.search(15)).toBe(true);
+  });
+
+  test("should return false for non-existent values", () => {
+    tree.insert(10);
+    tree.insert(5);
+
+    expect(tree.search(20)).toBe(false);
+    expect(tree.search(3)).toBe(false);
+  });
+
+  test("should perform inorder traversal correctly", () => {
+    tree.insert(10);
+    tree.insert(5);
+    tree.insert(15);
+    tree.insert(2);
+    tree.insert(7);
+
+    const consoleSpy = jest.spyOn(console, "log");
+    tree.inorder(tree.root);
+
+    expect(consoleSpy.mock.calls.map((call) => call[0])).toEqual([
+      2, 5, 7, 10, 15,
+    ]);
+    consoleSpy.mockRestore();
+  });
+
+  test("should perform preorder traversal correctly", () => {
+    tree.insert(10);
+    tree.insert(5);
+    tree.insert(15);
+    tree.insert(2);
+    tree.insert(7);
+
+    const consoleSpy = jest.spyOn(console, "log");
+    tree.preorder(tree.root);
+
+    expect(consoleSpy.mock.calls.map((call) => call[0])).toEqual([
+      10, 5, 2, 7, 15,
+    ]);
+    consoleSpy.mockRestore();
+  });
+
+  test("should perform postorder traversal correctly", () => {
+    tree.insert(10);
+    tree.insert(5);
+    tree.insert(15);
+    tree.insert(2);
+    tree.insert(7);
+
+    const consoleSpy = jest.spyOn(console, "log");
+    tree.postorder(tree.root);
+
+    expect(consoleSpy.mock.calls.map((call) => call[0])).toEqual([
+      2, 7, 5, 15, 10,
+    ]);
+    consoleSpy.mockRestore();
   });
 });
